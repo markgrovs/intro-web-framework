@@ -3,4 +3,6 @@
     <a href="/dj/redirector/intro_wf_demo/home">Home</a>
     <view name="framework_simple_xml"/>
     <a href="/app/intro_wf_demo/simple_xml_example_html">Escaped HTML</a>
+    <a href="/dj/redirector/intro_wf_demo/custom_viz">Adding Custom Viz</a>
+    <a href="/dj/redirector/intro_wf_demo/drilldown">Token Binding</a>
 </nav>

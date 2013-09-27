@@ -8,3 +8,18 @@ def home(request):
         "message": "Hello World from intro_wf_demo!",
         "app_name": "intro_wf_demo"
     }
+
+# @render_to('intro_wf_demo:custom_viz.html')
+# @login_required
+# def custom_viz(request):
+#   return {
+#     "app_name": "intro_wf_demo"
+#   }
+
+
+@render_to()
+@login_required
+def render_page(request, tmpl):
+    return {
+      "TEMPLATE": "intro_wf_demo:%s.html" % tmpl
+    }
