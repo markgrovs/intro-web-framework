@@ -2,4 +2,5 @@
     <view name="default" default="true"/>
     <a href="/dj/redirector/intro_wf_demo/home">Home</a>
     <view name="framework_simple_xml"/>
+    <a href="/app/intro_wf_demo/simple_xml_example_html">Escaped HTML</a>
 </nav>
