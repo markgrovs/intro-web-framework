@@ -2,7 +2,7 @@
 
 {% load splunkmvc %}
 
-{% block title %}{{app_name}} Debugger test {% endblock title %}
+{% block title %} Token Binding {% endblock title %}
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}{{app_name}}/custom.css" />
@@ -42,46 +42,23 @@
         </div>
     </div>
     <div class="dashboard-row">
-        <div class="dashboard-cell" style="width: 30%;">
+        <div class="dashboard-cell" style="width: 33%; height:435px;">
             <div class="dashboard-panel">
-                <div class="dashboard-element" style="height: 250px;">
+                <div class="dashboard-element" >
                     <div class="panel-head">
                         <h3>Choose a city</h3>
                     </div>
                     <div style="margin: 20px;">
-                    <p>This page lets you choose a city and updates all searches to correspond to that city.</p>
-                    {% dropdown id="dropdown1" default="Seattle, WA" valueField="DestCityName" managerid="dropdown-search" value="$cityName$"|token_safe %}
+                        <p>This page lets you choose a city and updates all searches to correspond to that city.</p>
+                        {% dropdown id="dropdown1" default="Seattle, WA" valueField="DestCityName" managerid="dropdown-search" value="$cityName$"|token_safe %}
+                    </div>
                 </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span12 dashboard-header clearfix">
-            <h2><span id="title">Seattle</span> Air Traffic</h2>
-        </div>
-    </div>
-    <div class="dashboard-row">
-        <div class="dashboard-cell" style="width: 30%;">
-            <div class="dashboard-panel">
-                <div class="dashboard-element datapanes" >
-                    <div class="panel-head">
-                        <h3>Arrival Volume</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="well">
-                        {% single id="single1" managerid="single-search1" beforeLabel="Total Arrivals" %}
-                        </div>
-
-                    <div class="panel-head">
-                        <h3>Arrival Times</h3>
-                    </div>
-                        {% chart id="time-chart1" managerid="time-search1" type="line" %}
-                    </div>
+                <div class="well">
+                    {% single id="single1" managerid="single-search1" beforeLabel="Total Arrivals" %}
                 </div>
             </div>
         </div>
-        <div class="dashboard-cell" style="width: 30%;">
+        <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes" >
                     <div class="panel-head">
@@ -93,7 +70,25 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-cell" style="width: 30%;">
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes2" >
+                    <div class="panel-head">
+                        <h3><span id="carriertitle2">Delta Air Lines Inc</span> Cities Served</h3>
+                    </div>
+                    {% table id="carrier-citiesrt" managerid="carrier-city-search" pageSize="6" %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12 dashboard-header clearfix">
+            <h2><span id="title">Seattle</span> Air Traffic</h2>
+        </div>
+    </div>
+    <div class="dashboard-row">
+
+        <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes" >
                      <div class="panel-head">
@@ -105,9 +100,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="dashboard-row" style="margin-top: 0px;">
-        <div class="dashboard-cell" style="width: 30%;">
+        <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes2" >
                    <div class="panel-head">
@@ -123,7 +116,7 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-cell" style="width: 30%;">
+        <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes2" >
                     <div class="panel-head">
@@ -133,16 +126,7 @@
                 </div>
             </div>
         </div>
-        <div class="dashboard-cell" style="width: 30%;">
-            <div class="dashboard-panel">
-                <div class="dashboard-element datapanes2" >
-                    <div class="panel-head">
-                        <h3><span id="carriertitle2">Delta Air Lines Inc</span> Cities Served</h3>
-                    </div>
-                    {% table id="carrier-citiesrt" managerid="carrier-city-search" pageSize="6" %}
-                </div>
-            </div>
-        </div>
+
     </div>
 
 
@@ -335,18 +319,11 @@ require([
             $("#carriertitle2").text(value);
         });
 
-        var table = mvc.Components.getInstance("rt-selector");
-        table.on("clicked:row", function(e){
-            mvc.Components.getInstance("default").set("cityName", (e.model.get("City")));
-        });
-
-
         var chart = mvc.Components.getInstance("carrier-chart1");
         chart.on("clicked:chart", function(e){
                     mvc.Components.getInstance("default").set("carrier", (e.value));
                     e.preventDefault();
         });
-
 
     });
 
