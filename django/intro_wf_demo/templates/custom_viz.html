@@ -26,9 +26,11 @@
                 <div class="panel-element-row">
                     <div class="dashboard-element table" id="element1" style="width: 100%">
                         <div class="panel-head">
-                            <h3>Airports by Destination</h3>
+                            <h3>Flight Data</h3>
                         </div>
-                        <div class="panel-body"></div>
+                        <div class="panel-body">
+                            <div id="sankey-chart" style="height:500px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,11 +42,9 @@
                 <div class="panel-element-row">
                     <div class="dashboard-element table" id="element1" style="width: 100%">
                         <div class="panel-head">
-                            <h3>Sankey</h3>
+                            <h3>Airports by Destination</h3>
                         </div>
-                        <div class="panel-body">
-                            <div id="example-chart" style="height:500px;"></div>
-                        </div>
+                        <div class="panel-body"></div>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@ require([
     "splunkjs/mvc/savedsearchmanager",
     "splunkjs/mvc/postprocessmanager",
     "splunkjs/mvc/simplexml/urltokenmodel",
-    "intro_wf_demo/components/sankey/sankey"
+    "intro_wf_demo/components/sankey/sankey"  // Requiring Sankey
     ],
     function(
         mvc,
@@ -173,8 +173,8 @@ require([
             "preview": true
         }, {tokens: true, tokenNamespace: "submitted"});
 
-        var examplesearch = new SearchManager({
-            "id":  "example-search",
+        var sankeySearch = new SearchManager({
+            "id":  "sankey-search",
             "search": "| inputlookup faa.demo.csv | search DestCityName=* OriginCityName=* AND DestCityName!='' AND OriginCityName!='' | head 100 | stats count by OriginCityName DestCityName",
             "cache":  "true"
         });
@@ -220,9 +220,9 @@ require([
         }, {tokens: true}).render();
 
         var sankey = new Sankey({
-            'id' : 'example',
-            'managerid' : 'example-search',
-            'el' : $('#example-chart')
+            'id' : 'sankey1',
+            'managerid' : 'sankey-search',
+            'el' : $('#sankey-chart')
         }).render();
 
 
