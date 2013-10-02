@@ -173,6 +173,9 @@ require([
             "preview": true
         }, {tokens: true, tokenNamespace: "submitted"});
 
+
+        // Sankey Chart Search
+
         var sankeySearch = new SearchManager({
             "id":  "sankey-search",
             "search": "| inputlookup faa.demo.csv | search DestCityName=* OriginCityName=* AND DestCityName!='' AND OriginCityName!='' | head 100 | stats count by OriginCityName DestCityName",
@@ -218,6 +221,8 @@ require([
             "managerid": "search1",
             "el": $('#element1')
         }, {tokens: true}).render();
+
+        // Sankey Chart
 
         var sankey = new Sankey({
             'id' : 'sankey1',

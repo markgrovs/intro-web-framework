@@ -73,10 +73,16 @@
         <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes2" >
-                    <div class="panel-head">
-                        <h3><span id="carriertitle2">Delta Air Lines Inc</span> Cities Served</h3>
+                   <div class="panel-head">
+                        <h3>Volume by Carrier</h3>
                     </div>
-                    {% table id="carrier-citiesrt" managerid="carrier-city-search" pageSize="6" %}
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            <div style="margin-top: 60px;">
+                        {% chart id="carrier-chart1" managerid="carrier-search1" type="pie" %}
+                        </div>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,19 +109,14 @@
         <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes2" >
-                   <div class="panel-head">
-                        <h3>Volume by Carrier</h3>
+                    <div class="panel-head">
+                        <h3><span id="carriertitle2">Delta Air Lines Inc</span> Cities Served</h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="panel-body">
-                            <div style="margin-top: 60px;">
-                        {% chart id="carrier-chart1" managerid="carrier-search1" type="pie" %}
-                        </div>
-                    </div>
-                    </div>
+                    {% table id="carrier-citiesrt" managerid="carrier-city-search" pageSize="6" %}
                 </div>
             </div>
         </div>
+
         <div class="dashboard-cell" style="width: 33%;">
             <div class="dashboard-panel">
                 <div class="dashboard-element datapanes2" >
