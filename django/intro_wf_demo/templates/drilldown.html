@@ -137,7 +137,6 @@
 {% block managers %}
 
    {% searchmanager id="dropdown-search" search="| inputlookup faa.demo.csv | head 5000 | stats count by DestCityName"%}
-   {% searchmanager id="mapsearch" search='| inputlookup faa.demo.csv | search DestCityName="$cityName$" | rename OriginLatitude as latitude, OriginLongitude as longitude | geostats count'|token_safe %}
    {% searchmanager id="carrier-city-search" search='| inputlookup faa.demo.csv | head 10000 | search AirlineDescription="$carrier$" | chart count by DestCityName | sort count'|token_safe %}
 
 {% endblock managers %}
@@ -186,6 +185,14 @@ require([
             "app": utils.getCurrentApp(),
             "auto_cancel": 90,
             "status_buckets": 0,
+            "preview": true,
+            "wait": 0
+        });
+
+        new SearchManager({
+            "id": "mapsearch",
+            "search": mvc.tokenSafe('| inputlookup faa.demo.csv | search DestCityName="$cityName$" | rename OriginLatitude as latitude, OriginLongitude as longitude |geostats latfield=latitude longfield=longitude count'),
+            "auto_cancel": 90,
             "preview": true,
             "wait": 0
         });

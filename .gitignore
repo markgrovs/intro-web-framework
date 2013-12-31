@@ -15,6 +15,7 @@ Icon
 *.log
 *.pot
 *.pyc
+*.pyo
 local_settings.py
 
 # SublimeText project files

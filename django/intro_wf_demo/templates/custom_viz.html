@@ -41,7 +41,7 @@
         <div class="dashboard-cell" style="width: 100%;">
             <div class="dashboard-panel clearfix">
                 <div class="panel-element-row">
-                    <div class="dashboard-element table" id="element1" style="width: 100%">
+                    <div class="dashboard-element table" id="element2" style="width: 100%">
                         <div class="panel-head">
                             <h3>Airports by Destination</h3>
                         </div>
@@ -164,7 +164,7 @@ require([
 
         var search1 = new SearchManager({
             "id": "search1",
-            "search": "search index=faa | stats count by DestState DestAirport | sort - count",
+            "search": "| inputlookup faa.demo.csv | stats count by DestState DestAirport | sort - count",
             "status_buckets": 0,
             "latest_time": "1359705600",
             "earliest_time": "1357027200",
@@ -214,13 +214,13 @@ require([
         //
 
         var element1 = new TableElement({
-            "id": "element1",
+            "id": "element2",
             "dataOverlayMode": "none",
             "displayRowNumbers": true,
             "drilldown": "row",
             "wrap": "true",
             "managerid": "search1",
-            "el": $('#element1')
+            "el": $('#element2')
         }, {tokens: true}).render();
 
         // Sankey Chart
