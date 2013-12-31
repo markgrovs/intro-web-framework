@@ -137,9 +137,7 @@
 {% block managers %}
 
    {% searchmanager id="dropdown-search" search="| inputlookup faa.demo.csv | head 5000 | stats count by DestCityName"%}
-
    {% searchmanager id="mapsearch" search='| inputlookup faa.demo.csv | search DestCityName="$cityName$" | rename OriginLatitude as latitude, OriginLongitude as longitude | geostats count'|token_safe %}
-
    {% searchmanager id="carrier-city-search" search='| inputlookup faa.demo.csv | head 10000 | search AirlineDescription="$carrier$" | chart count by DestCityName | sort count'|token_safe %}
 
 {% endblock managers %}

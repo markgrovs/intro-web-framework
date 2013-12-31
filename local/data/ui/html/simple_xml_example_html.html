@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Adding Custom Viz | Splunk</title>
+    <title>Simple XML Example HTML | Splunk</title>
     <link rel="shortcut icon" href="{{SPLUNKWEB_URL_PREFIX}}/static/img/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" media="all" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/pages/dashboard-simple-bootstrap.min.css" />
@@ -18,28 +18,11 @@
 </div>
 <div class="dashboard-body container-fluid main-section-body" data-role="main">
     <div class="dashboard-header clearfix">
-        <h2>Adding Custom Viz</h2>
+        <h2>Simple XML Example HTML</h2>
     </div>
-    <!-- Div Section for Sankey Chart -->
     <div class="dashboard-row dashboard-row1">
         <div class="dashboard-cell" style="width: 100%;">
-            <div class="dashboard-panel clearfix">
-                <div class="panel-element-row">
-                    <div class="dashboard-element table" id="element1" style="width: 100%">
-                        <div class="panel-head">
-                            <h3>Flight Data</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div id="sankey-chart" style="height:500px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="dashboard-row dashboard-row2">
-        <div class="dashboard-cell" style="width: 100%;">
-            <div class="dashboard-panel clearfix">
+            <div class="dashboard-panel clearfix">                
                 <div class="panel-element-row">
                     <div class="dashboard-element table" id="element1" style="width: 100%">
                         <div class="panel-head">
@@ -58,7 +41,7 @@
 <script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/build/simplexml.min/config.js"></script>
 <script type="text/javascript">
 require.config({
-    baseUrl: "{{STATIC_URL}}",
+    baseUrl: "{{SPLUNKWEB_URL_PREFIX}}/static/js",
     waitSeconds: 0 // Disable require.js load timeout
 });
 require([
@@ -87,7 +70,6 @@ require([
     "splunkjs/mvc/savedsearchmanager",
     "splunkjs/mvc/postprocessmanager",
     "splunkjs/mvc/simplexml/urltokenmodel",
-    "intro_wf_demo/components/sankey/sankey"  // Requiring Sankey
     ],
     function(
         mvc,
@@ -114,8 +96,7 @@ require([
         SearchManager,
         SavedSearchManager,
         PostProcessManager,
-        UrlTokenModel,
-        Sankey) {
+        UrlTokenModel) {
 
 
         // AUTO-COMPILED JAVASCRIPT
@@ -175,15 +156,6 @@ require([
         }, {tokens: true, tokenNamespace: "submitted"});
 
 
-        // Sankey Chart Search
-
-        var sankeySearch = new SearchManager({
-            "id":  "sankey-search",
-            "search": "| inputlookup faa.demo.csv | search DestCityName=* OriginCityName=* AND DestCityName!='' AND OriginCityName!='' | head 100 | stats count by OriginCityName DestCityName",
-            "cache":  "true"
-        });
-
-
         //
         // Create header and footer Splunk UI
         //
@@ -222,15 +194,7 @@ require([
             "managerid": "search1",
             "el": $('#element1')
         }, {tokens: true}).render();
-
-        // Sankey Chart
-
-        var sankey = new Sankey({
-            'id' : 'sankey1',
-            'managerid' : 'sankey-search',
-            'el' : $('#sankey-chart')
-        }).render();
-
+        
 
         //
         // Submit any form data
@@ -250,6 +214,5 @@ require([
     }
 );
 </script>
-
 </body>
 </html>
