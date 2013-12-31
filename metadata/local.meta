@@ -1,0 +1,20 @@
+[app/ui]
+version = 6.0
+modtime = 1380232014.415233000
+
+[app/launcher]
+version = 6.0
+modtime = 1380232014.419106000
+
+[app/package/check_for_updates]
+version = 6.0
+modtime = 1380232014.420101000
+
+[html/simple_xml_example_html]
+owner = admin
+version = 6.0
+modtime = 1380300048.124224000
+
+[views/framework_simple_xml]
+version = 6.0
+modtime = 1383074373.202995000

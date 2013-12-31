@@ -1,0 +1,237 @@
+{% extends "splunkdj:base_with_app_bar.html" %}
+
+{% load splunkmvc %}
+
+{% block title %} Token Binding {% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}{{app_name}}/custom.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}splunkjs/css/dashboard.css">
+
+    <style>
+        .main-area {
+            margin: 0px auto;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 10px;
+            width: 300px;
+        }
+        .well {
+            background: WhiteSmoke;
+            margin: 20px;
+        }
+        .datapanes{
+            height: 435px;
+        }
+        .datapanes2{
+            height: 350px;
+        }
+        .node {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+
+{% block content %}
+
+<div class="dashboard-body container-fluid main-section-body" data-role="main">
+
+    <div class="row">
+        <div class="span12 dashboard-header clearfix">
+            <h2>Token Binding</h2>
+        </div>
+    </div>
+    <div class="dashboard-row">
+        <div class="dashboard-cell" style="width: 33%; height:435px;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element" >
+                    <div class="panel-head">
+                        <h3>Choose a city</h3>
+                    </div>
+                    <div style="margin: 20px;">
+                        <p>This page lets you choose a city and updates all searches to correspond to that city.</p>
+                        {% dropdown id="dropdown1" default="Seattle, WA" valueField="DestCityName" managerid="dropdown-search" value="$cityName$"|token_safe %}
+                    </div>
+                </div>
+                <div class="well">
+                    {% single id="single1" managerid="single-search1" beforeLabel="Total Arrivals" %}
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes" >
+                    <div class="panel-head">
+                        <h3>Origin Cities</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="bubbleDiv1" style="margin-left: 20px; height:400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes2" >
+                   <div class="panel-head">
+                        <h3>Volume by Carrier</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            <div style="margin-top: 60px;">
+                        {% chart id="carrier-chart1" managerid="carrier-search1" type="pie" %}
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12 dashboard-header clearfix">
+            <h2><span id="title">Seattle</span> Air Traffic</h2>
+        </div>
+    </div>
+    <div class="dashboard-row">
+
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes" >
+                     <div class="panel-head">
+                        <h3>Origin City Location</h3>
+                    </div>
+                    <div id="mapHanger"></div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes2" >
+                    <div class="panel-head">
+                        <h3><span id="carriertitle2">Delta Air Lines Inc</span> Cities Served</h3>
+                    </div>
+                    {% table id="carrier-citiesrt" managerid="carrier-city-search" pageSize="6" %}
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-cell" style="width: 33%;">
+            <div class="dashboard-panel">
+                <div class="dashboard-element datapanes2" >
+                    <div class="panel-head">
+                        <h3><span id="carriertitle">Delta Air Lines Inc</span> Cities Served</h3>
+                    </div>
+                    {% chart id="carrier-cities" managerid="carrier-city-search" %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+{% endblock content%}
+
+{% block managers %}
+
+   {% searchmanager id="dropdown-search" search="| inputlookup faa.demo.csv | head 5000 | stats count by DestCityName"%}
+
+   {% searchmanager id="mapsearch" search='| inputlookup faa.demo.csv | search DestCityName="$cityName$" | rename OriginLatitude as latitude, OriginLongitude as longitude | geostats count'|token_safe %}
+
+   {% searchmanager id="carrier-city-search" search='| inputlookup faa.demo.csv | head 10000 | search AirlineDescription="$carrier$" | chart count by DestCityName | sort count'|token_safe %}
+
+{% endblock managers %}
+
+{% block js %}
+
+
+<script type="text/javascript">
+
+require([
+    "splunkjs/mvc",
+    "splunkjs/mvc/utils",
+    "underscore",
+    "jquery",
+    "intro_wf_demo/components/bubblechart/bubblechart",
+    "splunkjs/mvc/simplexml",
+    "splunk.config",
+    "splunkjs/ready!"],
+    function(mvc, utils, _, $, BubbleChart) {
+
+        // Set initial carrier
+        mvc.Components.getInstance("default").set("carrier", "Delta Air Lines Inc.: DL");
+
+        var SearchManager = require("splunkjs/mvc/searchmanager");
+
+        new SearchManager({
+            "id": "single-search1",
+            "search": mvc.tokenSafe('| inputlookup faa.demo.csv | head 100000 | search DestCityName="$cityName$" | stats count '),
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "status_buckets": 0,
+            "preview": true,
+        });
+        new SearchManager({
+            "id": "bubble-search1",
+            "search": mvc.tokenSafe('| inputlookup faa.demo.csv | search (DestCityName="$cityName$") | stats count by OriginCityName OriginState | sort - count limit=30'),
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "status_buckets": 0,
+            "preview": true,
+            "wait": 0
+        });
+        new SearchManager({
+            "id": "carrier-search1",
+            "search": mvc.tokenSafe('| inputlookup faa.demo.csv | head 100000 | search DestCityName="$cityName$" | chart count by AirlineDescription'),
+            "app": utils.getCurrentApp(),
+            "auto_cancel": 90,
+            "status_buckets": 0,
+            "preview": true,
+            "wait": 0
+        });
+
+        // Dummy control bound to bubble search to supress warnings
+        var SingleView = require("splunkjs/mvc/singleview");
+        new SingleView({
+            "id" : "dummy",
+            "managerid" : "bubble-search1"
+        });
+
+        var bubbles = new BubbleChart({
+            'managerid': 'bubble-search1',
+            'nameField': 'OriginCityName',
+            'groupingField': 'OriginState',
+            'el': $('#bubbleDiv1')
+        }).on("click",function(e){
+            mvc.Components.getInstance("default").set("cityName", (e.name));
+        });
+
+        var SplunkMapView = require("splunkjs/mvc/splunkmapview");
+        var map = new SplunkMapView({
+            'id' : "map1",
+            'managerid' : "mapsearch",
+            'mapping.map.fitBounds' : "(7.885147283424331,-148.7109375,61.3546135846894,-49.74609374999999)",
+            'mapping.tileLayer.minZoom' : 3,
+            'el' : $('#mapHanger')
+        });
+
+        mvc.Components.getInstance("default").on("change:cityName", function(model, value, options) {
+            $("#title").text(value.split(',')[0]);
+        });
+        mvc.Components.getInstance("default").on("change:carrier", function(model, value, options) {
+            $("#carriertitle").text(value);
+            $("#carriertitle2").text(value);
+        });
+
+        var chart = mvc.Components.getInstance("carrier-chart1");
+        chart.on("clicked:chart", function(e){
+                    mvc.Components.getInstance("default").set("carrier", (e.value));
+                    e.preventDefault();
+        });
+
+    });
+
+    </script>
+{% endblock js %}
